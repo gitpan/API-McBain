@@ -1,0 +1,219 @@
+NAME
+    API::McBain - Framework for building auto-validating, self-documenting
+    APIs.
+
+VERSION
+    version 0.1
+
+SYNOPSIS
+    HOW YOU WRITE YOUR API
+
+            package MyAPI;
+
+            use API::McBain                 # also imports warnings and strict
+                    separator => '.';       # that is the default, you can drop this or use something else
+
+            1;
+
+            package MyAPI::Math;
+
+            use API::McBain::Topic          # also imports warnings and strict
+                    topic => 'math';        # if you don't provide one, McBain will use a lowercased version
+                                            # of the end of the package name (in this case, 'math').
+
+            provide('add')
+                    ->description('Receives two integers, returns their sum.')
+                    ->param(one => { integer => 1, required => 1 })
+                    ->param(two => { integer => 1, required => 1 })
+                    ->returns('integer')
+                    ->callback(sub {
+                            my ($self, %params) = @_;
+
+                            return $params{one} + $params{two};
+                    });
+
+    HOW YOU/OTHERS USE YOUR API:
+
+            use MyAPI;
+
+            my $api = MyAPI->new;
+
+            print $api->call('math.add', one => 1, two => 4); # prints 5
+            print $api->call('math.add', one => 1); # throws exception
+
+    HOW YOU/OTHERS LEARN YOUR API:
+
+            # echoing this in the command line:
+            $ mcbain describe MyAPI::Math
+
+            # will result in the following output:
+            > MyAPI::Math
+            > 
+            > Provided methods:
+            >   * add
+            >     Description: Receives two integers, returns their sum.
+            >     Parameters:
+            >        one: required, integer
+            >        two: required, integer
+            >     Return type: integer
+
+DESCRIPTION
+    WARNING: this is an early release. API is subject to change, bugs may
+    lurk under your bed.
+
+    "McBain" is a simple framework for building APIs in Perl. It takes the
+    burden of validating parameters so you don't need to repeat yourself
+    with endless sanity checks; helps ensuring your APIs are written in a
+    consistent manner; and also makes documenting them easier, making that
+    process at least semi-automatic.
+
+    While Perl subroutines being endlessly flexible is one of the language's
+    main strengths, there are some cases where finer grained control over
+    them could be welcome. APIs that are meant to be used by others (say, an
+    API for a web service you created meant to be used by customers) are one
+    such example. You need to make sure that users of your code use it and
+    don't abuse it. You need to express your API methods' requirements
+    explicitly, and validate input in such a way that bad input does not
+    cause problems, and users can understand what they did wrong. This is
+    just two things your API needs to do, but doing them is hard, boring and
+    tedious. While helpers like subroutine signatures are available, they
+    are not flexible enough and are far from actually helping to solve the
+    problem.
+
+    "McBain" provides you with a simple syntax for building such methods and
+    documenting them. It uses Brannigan to validate input according to your
+    specifications, and also provides a command line tool, mcbain, that
+    provides a "man"-like interface for reading your API's documentation,
+    while automatically parsing input specifications for each method so you
+    don't need to document input requirements yourself.
+
+    In "McBain", your API methods are categorized into "topics". Each topic
+    is a Perl package that uses API::McBain::Topic. It has a name, and as
+    many "provided methods" as you want. Each method also has a name, of
+    course, and users can call these methods by referring to their complete
+    name, including the topic. For example, if topic "math" has a method
+    called "subtract", users call "math.subtract" to invoke that method (the
+    dot character "." is the default separator between topic and method
+    names, but can be modified to anything you want).
+
+    Your API will always start with a top level package that uses this
+    module ("API::McBain"). The top level package is not a topic and cannot
+    provide methods.
+
+    "McBain" is built to be as lightweight as possible. It does not rely on
+    "Moose" or any other OO modules, and I plan to keep dependencies to a
+    minimum.
+
+DIAGNOSTICS
+    "McBain" throws exceptions of "McBain"-specific classes that extend
+    Exception::Class::Base. The following exception classes currently exist:
+
+    *   "API::McBain::Exception::NotFound" - Thrown when a call is made to a
+        topic and/or method that does not exist. Possible error strings are
+        "Topic %s does not exist" and "Topic %s does not provide a method
+        named %s".
+
+    *   "API::McBain::Exception::BadRequest" - Thrown when a call is made
+        with an illegal namespace (so McBain cannot calculate topic and
+        method, probably due to wrong or missing separator), in which case
+        "Illegal namespace %s" will be the error text; or because input
+        parameters for a provided method failed validation, in which case
+        "Parameters failed validation" will be the error text, and the
+        exception object will also have a field named "rejects" with
+        Brannigan's standard "_rejects" structure (see Brannigan for more
+        info).
+
+CONFIGURATION AND ENVIRONMENT
+    "API::McBain" requires no configuration files or environment variables.
+
+DEPENDENCIES
+    "API::McBain" depends on the following CPAN modules:
+
+    *   Brannigan
+
+    *   Carp
+
+    *   Exception::Class
+
+    *   Module::Pluggable
+
+    *   Tie::IxHash
+
+    *   Try::Tiny
+
+    The command line utility, mcbain, depends on the following CPAN modules:
+
+    *   Getopt::Compact::WithCmd
+
+    *   Module::Load
+
+    *   Term::ANSIColor
+
+INCOMPATIBILITIES WITH OTHER MODULES
+    None reported.
+
+BUGS AND LIMITATIONS
+    No bugs have been reported.
+
+    Please report any bugs or feature requests to
+    "bug-API-McBain@rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=API-McBain>.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+            perldoc API::McBain
+
+    You can also look for information at:
+
+    *   RT: CPAN's request tracker
+
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=API-McBain>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/API-McBain>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/API-McBain>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/API-McBain/>
+
+AUTHOR
+    Ido Perlmuter <ido@ido50.net>
+
+LICENSE AND COPYRIGHT
+    Copyright (c) 2013, Ido Perlmuter "ido@ido50.net".
+
+    This module is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself, either version 5.8.1 or any later
+    version. See perlartistic and perlgpl.
+
+    The full text of the license can be found in the LICENSE file included
+    with this module.
+
+DISCLAIMER OF WARRANTY
+    BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+    FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+    PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+    EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+    ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+    YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+    NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+    IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+    REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE LIABLE
+    TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL, OR
+    CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE
+    SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+    RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+    FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+    SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+    DAMAGES.
+

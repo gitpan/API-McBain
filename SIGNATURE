@@ -1,0 +1,44 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.69.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+SHA1 b25d681113e6af33f4c11aea293b17fe078d099d Changes
+SHA1 48a89012e31da14176e99a0af7e2ab120cdd727a INSTALL
+SHA1 4dceae0eaef7a9ac83dea9d378c954bfce55223a LICENSE
+SHA1 f7dde0fb33e24e012abbcdcf038cb89bb76d9d25 MANIFEST
+SHA1 571635fcb5050e84bdee085dc40b7037cca6f585 MANIFEST.SKIP
+SHA1 70fb25a6d74d8d66a0bb80841e1d6b55d5ca9c6e META.json
+SHA1 a1e06c1a8b3ee50941cf5fccf5b055045b15766a META.yml
+SHA1 05dfb6f13f67b0d16c68ebf9025a49da1717c98d Makefile.PL
+SHA1 33be2f076034735d1d2bb60a1b44f3d08204d6fc README
+SHA1 d42c951dc69da16ab001925e6cc01bf47f31be4c bin/mcbain
+SHA1 51324c2f5eb29d6dcf322662221d7e4490a1287b dist.ini
+SHA1 0fe8974078069d91240a3aaedb322cdb5e9a44b0 lib/API/McBain.pm
+SHA1 83772c70527b2dceb37f37d4259f5b39cd213dcd lib/API/McBain/Topic.pm
+SHA1 dab01e8b4755ce922e3fbd05fcff0daf5e10dc95 lib/API/McBain/Topic/ProvidedMethod.pm
+SHA1 11577d060d935fa02d8d43ef69155630324951b0 t/00-load.t
+SHA1 d8eaeecd946f41bf57b9361e68130e705411cb2f t/01-simple.t
+SHA1 a49f16e1365423d484e2408016130e7ff9cea095 t/lib/McBainTestAPI.pm
+SHA1 1710ae2a1f9563d4c2142293727b6234f36f9b57 t/lib/McBainTestAPI/TestTopic.pm
+SHA1 87768d177f8c2e2df9c591cde869e7c8a245555e t/release-dist-manifest.t
+SHA1 9433c240fe590bc404ab68ff63984df763e347ed t/release-pod-coverage.t
+SHA1 b30cbdfaf935017c4568c0c91b242438cb87786e t/release-pod-syntax.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.19 (GNU/Linux)
+
+iF4EAREIAAYFAlFyjJsACgkQa4OHQAFM10diUgD/ROYk7gjLuTRkvMaxAv4yl9ur
+AZNN5TUJ1MtJctNFqY0A/A9cq0C9Y7dQw5tRHDM7GlfPRMNqM6yneIdayIRJMwZE
+=hlUr
+-----END PGP SIGNATURE-----
